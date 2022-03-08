@@ -1,9 +1,17 @@
 from urllib import request
-import requests, bs4
+from bs4 import BeautifulSoup
+import requests, bs4, urllib
 import re, os
 
+# Make corrections
+def GetSecondTopLevel(domain):
+    return re.sub('^[^\w+]|[^\w+\-\.]|[^\w+]$','',domain)
+
+domain = GetSecondTopLevel(input("Input second and top level domain (site.edu)"))
+subdomains = []
+
 # Search current/expired cert for domain
-crt = 'https://crt.sh/?q='
+crt = 'https://crt.sh/?q=' + domain
 
 # Custom Header
 header = {
@@ -14,10 +22,27 @@ header = {
     "Referer":"https://www.duckduckgo.com"
 }
 
-# Get Response
-response = request.get(crt, headers=header)
-soup = BeautifulSoup(response.content, 'html.parser')
-tbody = soup.find('tbody')
-for a in tbody.find_all('a'):
-    with open("level_domains.txt", "a", encoding='utf-8') as f:
-        f.write(re.sub('\u200f|\u200e', "", a.text) + "\n")
+try:
+    print("Getting subdomains, please wait")
+
+    # Get response, return status, if true, proceed
+    response = requests.get(crt, headers=header)
+    if (response.status_code == 200):
+        # Getting page data       
+        soup = BeautifulSoup(response.content, 'html.parser')
+        tbody = soup.find('tbody')
+        trows = tbody.find_all('tr')
+
+        for row in trows:
+            cols = row.find_all('td')
+            cols = [x.text.strip() for x in cols]
+            subdomains.append(cols)
+        
+        
+        #print("Dumping subdomains to " + domain.split('.')[0] + ".txt")
+        for a in tbody.find_all('a'):
+            print(a)
+            #with open(domain.split('.')[0] + ".txt", "a", encoding='utf-8') as f:
+            #    f.write(re.sub('\u200f|\u200e', "", a.text) + "\n")
+except:
+    print("There was an error processed your request::" + response.status_code)
