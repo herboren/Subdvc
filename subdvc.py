@@ -40,9 +40,10 @@ try:
             cols=[x.text for x in cols]
             subdomains.append(cols)   
 
-        for row in subdomains:           
-            #row = str(row).replace('.'+ parameter,'')
-            row = re.sub('[^\w+\-\.]', '', str(row))
+        for row in subdomains:        
+            print(type(row))   
+            row = str(row).replace('.'+ parameter,'')
+            row = re.sub('[^\w+\-\.]', '', row)
             if len(row) > 1:
                 if row not in domainlist:                
                     domainlist.append(row)
