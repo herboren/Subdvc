@@ -1,5 +1,3 @@
-from getpass import getuser
-from signal import default_int_handler
 from urllib import response
 from bs4 import BeautifulSoup
 import requests, re
@@ -7,7 +5,7 @@ import requests, re
 # Url
 crt = 'https://crt.sh/?q='
 parameter = ''
-
+toplevel = ''
 # Header
 header = {
     "Accept": "*/*",     
@@ -22,11 +20,10 @@ def GetStatus(status):
     response = requests.get('https://'+status)
     return True if response.status_code == 200 else False
 
-
 dirty = input("Input domain name (ex: mit.edu): ")
 if "/" in dirty:
         clean = re.sub('((https?|ftp|file):\/{2,})|(www\.)','', dirty)        
-        parameter = clean.split('/')[0]       
+        parameter = clean.split('/')[0]            
         print("Working url: "+crt+parameter)
 
 try:
@@ -43,9 +40,9 @@ try:
             cols=[x.text for x in cols]
             subdomains.append(cols)   
 
-        for row in subdomains:
-            row = str(row).replace('.'+ parameter,'\n')
-            row = re.sub('[^\w+\-\.]', '', row)
+        for row in subdomains:           
+            #row = str(row).replace('.'+ parameter,'')
+            row = re.sub('[^\w+\-\.]', '', str(row))
             if len(row) > 1:
                 if row not in domainlist:                
                     domainlist.append(row)
