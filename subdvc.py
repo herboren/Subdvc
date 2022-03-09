@@ -1,5 +1,6 @@
 from getpass import getuser
 from signal import default_int_handler
+from urllib import response
 from bs4 import BeautifulSoup
 import requests, re
 
@@ -30,14 +31,18 @@ def GetUserInput():
 
 # Requires http protocol
 def GetStatus(status):
-    response = requests.get(status)
-    return response.status_code
+    response = requests.get('https://'+status)
+    return True if response.status_code == 200 else False
 
 try:
-    if GetStatus(GetUserInput()) == 200:
-        print("Site is valid")
-    else:
-        print("Site is invalid")
+    if GetStatus(GetUserInput()):
+        response = requests.get(crt, headers=header)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        trows = soup.find_all('td')[5:6]
+
+        for r in trows:
+            print(r)
+
 except Exception as ex:
     print(ex)
 
