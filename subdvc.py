@@ -4,9 +4,6 @@ from urllib import response
 from bs4 import BeautifulSoup
 import requests, re
 
-usrdomain = ''
-subdomains = []
-
 # Url
 crt = 'https://crt.sh/?q='
 parameter = ''
@@ -20,28 +17,42 @@ header = {
     "Referer":"https://www.duckduckgo.com"
 }
 
-# Used for crt.sh concatenation
-def GetUserInput():
-    dirty = input("Input domain name (ex: mit.edu): ")
-    print(dirty)
-    if "/" in dirty:
-        clean = re.sub('((https?|ftp|file):\/{2,})|(www\.)','', dirty)        
-        clean = clean.split('/')
-        return clean[0]
-
-# Requires http protocol
+# Requires http protocol for status
 def GetStatus(status):
     response = requests.get('https://'+status)
     return True if response.status_code == 200 else False
 
-try:
-    if GetStatus(GetUserInput()):
-        response = requests.get(crt, headers=header)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        trows = soup.find_all('td')[5:6]
 
-        for r in trows:
-            print(r)
+dirty = input("Input domain name (ex: mit.edu): ")
+if "/" in dirty:
+        clean = re.sub('((https?|ftp|file):\/{2,})|(www\.)','', dirty)        
+        parameter = clean.split('/')[0]       
+        print("Working url: "+crt+parameter)
+
+try:
+    subdomains = []
+    domainlist = []
+    
+    if GetStatus(parameter):
+        response = requests.get(crt+parameter, headers=header)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        trows = soup.find_all('tr')
+        
+        for row in trows:
+            cols = row.find_all('td')[5:6]
+            cols=[x.text for x in cols]
+            subdomains.append(cols)   
+
+        for row in subdomains:
+            row = str(row).replace('.'+ parameter,'\n')
+            row = re.sub('[^\w+\-\.]', '', row)
+            if len(row) > 1:
+                if row not in domainlist:                
+                    domainlist.append(row)
+        
+        with open(parameter + ".txt", "a", encoding='utf-8') as f:
+            for domain in domainlist:
+                f.write(str(domain) + "\n")
 
 except Exception as ex:
     print(ex)
