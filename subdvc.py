@@ -1,7 +1,16 @@
 from posixpath import split
 from urllib import response
 from bs4 import BeautifulSoup
-import requests, re, colorama
+import requests, re
+from colorama import *
+
+
+G = Fore.LIGHTGREEN_EX  # green
+Y = Fore.LIGHTYELLOW_EX  # yellow
+B = Fore.LIGHTBLUE_EX  # blue
+R = Fore.LIGHTRED_EX  # red
+W = Fore.LIGHTWHITE_EX  # white
+
 
 # Url
 crt = 'https://crt.sh/?q='
@@ -25,7 +34,7 @@ dirty = input("Input domain name (ex: https://mit.edu): ")
 if "/" in dirty:
         clean = re.sub('((https?|ftp|file):\/{2,})|(www\.)','', dirty)        
         parameter = clean.split('/')[0]            
-        print("Working url: "+crt+parameter)
+        print(f"{Y}Working url: {G}{crt}{parameter}")
 
 try:
     subdomains = []
