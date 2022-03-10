@@ -21,7 +21,7 @@ def GetStatus(status):
     response = requests.get('https://'+status)
     return True if response.status_code == 200 else False
 
-dirty = input("Input domain name (ex: mit.edu): ")
+dirty = input("Input domain name (ex: https://mit.edu): ")
 if "/" in dirty:
         clean = re.sub('((https?|ftp|file):\/{2,})|(www\.)','', dirty)        
         parameter = clean.split('/')[0]            
