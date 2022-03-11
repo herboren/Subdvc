@@ -3,14 +3,9 @@ from bs4 import BeautifulSoup
 import requests, re, os
 from colorama import *
 
-
 G = Fore.LIGHTGREEN_EX  # green
-Y = Fore.LIGHTYELLOW_EX  # yellow
-B = Fore.LIGHTBLUE_EX  # blue
-R = Fore.LIGHTRED_EX  # red
 W = Fore.LIGHTWHITE_EX  # white
 C = Fore.LIGHTCYAN_EX # Cyan
-
 
 # Url used to obtain valid domain certificates
 crt = 'https://crt.sh/?q='
@@ -76,9 +71,8 @@ try:
             with open(parameter + ".txt", "a", encoding='utf-8') as f:
                 for d in dom_nodupe:           
                     f.write(str(d.strip('.')) + "\n")
-                         
+
         print(f"{C}Sub-domains written to file: {parameter}.txt{W}")
 
 except Exception as ex:
     print(ex)
-
