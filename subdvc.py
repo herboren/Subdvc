@@ -6,6 +6,7 @@ from colorama import *
 G = Fore.LIGHTGREEN_EX  # green
 W = Fore.LIGHTWHITE_EX  # white
 C = Fore.LIGHTCYAN_EX # Cyan
+Y = Fore.LIGHTYELLOW_EX # Yellow
 
 # Url used to obtain valid domain certificates
 crt = 'https://crt.sh/?q='
@@ -43,7 +44,7 @@ try:
         soup = BeautifulSoup(response.text, 'html.parser')
         trows = soup.find_all('tr')
         
-        # Get 5 element of table data in table row
+        # Get 5th element of table data in table row
         for row in trows:
             cols = row.find_all('td')[5:6]
             cols=[x.text for x in cols]
@@ -72,7 +73,7 @@ try:
                 for d in dom_nodupe:           
                     f.write(str(d.strip('.')) + "\n")
 
-        print(f"{C}Sub-domains written to file: {parameter}.txt{W}")
+        print(f"{Y}{len(dom_nodupe)} {C}Sub-domains written to file: {W}{parameter}.txt")
 
 except Exception as ex:
     print(ex)
